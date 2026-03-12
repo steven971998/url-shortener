@@ -1,4 +1,5 @@
 const urlService = require("../services/urlService");
+const logger = require("../config/logger");
 
 //To shorten the URL :
 exports.createShortUrl = async (req, res) => {
@@ -12,10 +13,12 @@ exports.createShortUrl = async (req, res) => {
     );
 
     const shortUrl = `${req.protocol}://${req.get("host")}/${url.shortCode}`;
-    console.log(`shortUrl : ${shortUrl}`);
+    // console.log(`shortUrl : ${shortUrl}`);
+    logger.info(`Short URL ${shortUrl} created for ${originalUrl}`);
     return res.json({ shortUrl: shortUrl });
   } catch (error) {
-    console.log(`Error : ${error?.message}`);
+    // console.log(`Error : ${error?.message}`);
+    logger.error(error.message);
 
     //If Alias already taken :
     if (error?.message == "Alias already taken") {

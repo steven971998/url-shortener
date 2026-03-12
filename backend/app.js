@@ -1,11 +1,23 @@
 const express = require("express")
 const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./config/swagger");
+const morgan = require("morgan");
+const logger = require("./config/logger");
 
 const app = express()
 
 /* Body parser */
 app.use(express.json())
+
+/* Send HTTP logs to Winston. */
+app.use(
+  morgan("dev", {
+    stream: {
+      write: (message) => logger.info(message.trim())
+    }
+  })
+);
+
 
 const urlRoutes = require("./routes/urlRoutes")
 const analyticsRoutes = require("./routes/analyticsRoutes");
@@ -21,6 +33,7 @@ app.get("/", (req, res) => {
 /* Routes */
 app.use(urlRoutes)
 app.use(analyticsRoutes)
+
 
 /* 404 Handler */
 app.use((req, res, next) => {
