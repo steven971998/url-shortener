@@ -1,12 +1,15 @@
 const Url = require("../models/Url");
-const {redisClient} = require("../config/redis");
+const { redisClient } = require("../config/redis");
 const generateShortCode = require("../utils/generateShortCode");
+const appConfig = require("../config/appConfig");
 
 //To create the short url and store the originalUrl and shortcode in mongoDB.
-exports.createShortUrl = async (originalUrl,alias) => {
-
+exports.createShortUrl = async (originalUrl, alias, expiresInDays) => {
   //If the original url doesn't start with http or https then add https.
-   if (!originalUrl.startsWith("http://") && !originalUrl.startsWith("https://")) {
+  if (
+    !originalUrl.startsWith("http://") &&
+    !originalUrl.startsWith("https://")
+  ) {
     originalUrl = "https://" + originalUrl;
   }
 
@@ -14,7 +17,6 @@ exports.createShortUrl = async (originalUrl,alias) => {
 
   //If alias is passed :
   if (alias) {
-
     // check if alias already exists in DB.
     const existing = await Url.findOne({ shortCode: alias });
 
@@ -24,30 +26,49 @@ exports.createShortUrl = async (originalUrl,alias) => {
     }
 
     shortCode = alias;
-
   } else {
-
     shortCode = generateShortCode(); //Generate shortcode without alias.
-
   }
 
-  //Store the originalUrl and shortCode in mongoDB.
+  // expiry calculation
+  let expiresAt = null;
+
+  //Logic for expiration in Days.
+  if (expiresInDays) {
+    expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + expiresInDays);
+  }
+
+  //Logic for expiration in seconds for testing purpose.
+
+  //  if (expiresInDays) {
+  //   expiresAt = new Date(Date.now() + expiresInDays * 1000);
+  // }
+
+  //Store the originalUrl, shortCode and expiresAt in mongoDB.
   const newUrl = await Url.create({
     originalUrl,
-    shortCode
+    shortCode,
+    expiresAt,
   });
 
   return newUrl;
 };
 
 exports.getOriginalUrl = async (shortCode) => {
-
   // check redis cache
-  const cachedUrl = await redisClient.get(shortCode); //Fetch the original url from redis if available.
+  const cachedData = await redisClient.get(shortCode); //Fetch the original url data from redis if available.
 
   //If original url exists in redis then return it without checking DB.
-  if (cachedUrl) {
-    return cachedUrl;
+  if (cachedData) {
+    const parsed = JSON.parse(cachedData);
+
+    // check expiry even in cache
+    if (parsed.expiresAt && new Date(parsed.expiresAt) < new Date()) {
+      throw new Error("Link expired");
+    }
+
+    return parsed.originalUrl;
   }
 
   // fetch from DB if url doesn't exist in redis.
@@ -55,8 +76,27 @@ exports.getOriginalUrl = async (shortCode) => {
 
   if (!url) return null;
 
+  // check url's expiry.
+  if (url.expiresAt && url.expiresAt < new Date()) {
+    throw new Error("Link expired");
+  }
+
   // cache the url in redis which we obtained from DB.
-  await redisClient.set(shortCode, url.originalUrl, "EX", 3600);
+
+  let ttl = appConfig.REDIS_CACHE_TTL; //Default expiry time in Redis when user has not mentioned the expiry time.
+
+  if (url.expiresAt) {
+    ttl = Math.floor((new Date(url.expiresAt) - new Date()) / 1000);
+  }
+
+  await redisClient.set(
+    shortCode,
+    JSON.stringify({
+      originalUrl: url.originalUrl,
+      expiresAt: url.expiresAt,
+    }),
+    { EX: ttl },
+  );
 
   return url.originalUrl;
 };

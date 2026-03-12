@@ -14,6 +14,11 @@ const urlSchema = new mongoose.Schema(
   clicks: {
     type: Number,
     default: 0
+  },
+  expiresAt: {
+    type: Date,
+    default: null,   // null means no expiry
+    index: { expires: 0 } //Will automatically delete the data 60 secs after expiry by using this TTL index.
   }
 },
 {
