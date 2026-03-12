@@ -1,19 +1,12 @@
 const express = require("express")
 
-
 const app = express()
 
 /* Body parser */
 app.use(express.json())
 
 const urlRoutes = require("./routes/urlRoutes")
-// const analyticsRoutes = require("./routes/analyticsRoutes")
-
-// app.use("/api/url", urlRoutes)  // API route
-
-// const urlController = require("./controllers/urlController")
-
-// app.get("/:code", urlController.redirectUrl) // redirect route
+const analyticsRoutes = require("./routes/analyticsRoutes");
 
 /* Health check route */
 app.get("/", (req, res) => {
@@ -21,8 +14,8 @@ app.get("/", (req, res) => {
 })
 
 /* Routes */
-app.use("/", urlRoutes)
-// app.use("/api/analytics", analyticsRoutes)
+app.use(urlRoutes)
+app.use(analyticsRoutes)
 
 /* 404 Handler */
 app.use((req, res, next) => {

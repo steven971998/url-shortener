@@ -75,6 +75,9 @@ exports.getOriginalUrl = async (shortCode) => {
       throw new Error("Link expired");
     }
 
+    // increment clicks in DB
+    await Url.updateOne({ shortCode }, { $inc: { clicks: 1 } });
+
     return parsed.originalUrl;
   }
 
@@ -87,6 +90,13 @@ exports.getOriginalUrl = async (shortCode) => {
   if (url.expiresAt && url.expiresAt < new Date()) {
     throw new Error("Link expired");
   }
+
+ // increment clicks
+  await Url.updateOne(
+    { shortCode },
+    { $inc: { clicks: 1 } }
+  );
+
 
   // cache the url in redis which we obtained from DB.
 
