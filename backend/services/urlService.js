@@ -2,15 +2,36 @@ const Url = require("../models/Url");
 const {redisClient} = require("../config/redis");
 const generateShortCode = require("../utils/generateShortCode");
 
-exports.createShortUrl = async (originalUrl) => {
+//To create the short url and store the originalUrl and shortcode in mongoDB.
+exports.createShortUrl = async (originalUrl,alias) => {
 
   //If the original url doesn't start with http or https then add https.
    if (!originalUrl.startsWith("http://") && !originalUrl.startsWith("https://")) {
     originalUrl = "https://" + originalUrl;
   }
 
-  const shortCode = generateShortCode();
+  let shortCode;
 
+  //If alias is passed :
+  if (alias) {
+
+    // check if alias already exists in DB.
+    const existing = await Url.findOne({ shortCode: alias });
+
+    //If alias already exists then throw error.
+    if (existing) {
+      throw new Error("Alias already taken");
+    }
+
+    shortCode = alias;
+
+  } else {
+
+    shortCode = generateShortCode(); //Generate shortcode without alias.
+
+  }
+
+  //Store the originalUrl and shortCode in mongoDB.
   const newUrl = await Url.create({
     originalUrl,
     shortCode

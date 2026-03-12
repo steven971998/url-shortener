@@ -3,13 +3,16 @@ const urlService = require("../services/urlService");
 //To shorten the URL :
 exports.createShortUrl = async (req, res) => {
   try {
-    const { originalUrl } = req.body;
-    const url = await urlService.createShortUrl(originalUrl);
+    const { originalUrl, alias } = req.body;
+    const url = await urlService.createShortUrl(originalUrl, alias);
     const shortUrl = `${req.protocol}://${req.get("host")}/${url.shortCode}`;
     console.log(`shortUrl : ${shortUrl}`)
     return res.json({shortUrl: shortUrl});
   } catch (error) {
     console.log(`Error : ${error?.message}`)
+    if(error?.message == "Alias already taken"){
+      return res.status(400).json({ error: error.message });
+    }
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
