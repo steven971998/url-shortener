@@ -5,6 +5,15 @@ const appConfig = {
     WINDOW: 15, //Time window.
     UNIT: "minutes" // seconds | minutes | hours | days,
   },
+  SWAGGER: {
+    OPENAPI : "3.0.0",
+    TITLE : "URL Shortener API",
+    VERSION : "1.0.0",
+    DESCRIPTION : "API documentation for the URL Shortener service",
+    URL : "http://localhost:5000"
+
+  }
+
 };
 
 module.exports = appConfig;

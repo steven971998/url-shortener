@@ -1,4 +1,6 @@
 const express = require("express")
+const swaggerUi = require("swagger-ui-express");
+const swaggerSpec = require("./config/swagger");
 
 const app = express()
 
@@ -7,6 +9,9 @@ app.use(express.json())
 
 const urlRoutes = require("./routes/urlRoutes")
 const analyticsRoutes = require("./routes/analyticsRoutes");
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 
 /* Health check route */
 app.get("/", (req, res) => {
