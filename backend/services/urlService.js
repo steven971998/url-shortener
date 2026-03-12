@@ -33,9 +33,29 @@ exports.createShortUrl = async (originalUrl, alias, expiresInDays) => {
     }
 
     shortCode = alias;
-  } else {
-    shortCode = generateShortCode(); //Generate shortcode without alias.
+  } 
+  //Generate shortCode without alias.
+  else {
+
+  let isUnique = false;
+
+  //shortCode collision handling:
+
+  //If the shortCode is not unique then keep on generating the shortCode until it creates a unique one.
+  while (!isUnique) {
+
+    shortCode = generateShortCode();
+
+    const existing = await Url.findOne({ shortCode }); //Check whether the shortCode already exist.
+
+    //If the shortCode is unique then use the generated shortCode.
+    if (!existing) {
+      isUnique = true;
+    }
+
   }
+
+}
 
   // expiry calculation
   let expiresAt = null;
