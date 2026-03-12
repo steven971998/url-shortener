@@ -20,6 +20,10 @@ exports.createShortUrl = async (req, res) => {
     //If Alias already taken :
     if (error?.message == "Alias already taken") {
       return res.status(400).json({ error: error.message });
+    } 
+    //If input URL is invalid.
+    else if (error?.message === "Invalid URL") {
+      return res.status(400).json({ error: "Invalid URL format" });
     }
 
     return res.status(500).json({ error: "Internal Server Error" });

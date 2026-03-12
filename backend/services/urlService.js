@@ -2,6 +2,7 @@ const Url = require("../models/Url");
 const { redisClient } = require("../config/redis");
 const generateShortCode = require("../utils/generateShortCode");
 const appConfig = require("../config/appConfig");
+const validateUrl = require("../utils/validateUrl");
 
 //To create the short url and store the originalUrl and shortcode in mongoDB.
 exports.createShortUrl = async (originalUrl, alias, expiresInDays) => {
@@ -11,6 +12,12 @@ exports.createShortUrl = async (originalUrl, alias, expiresInDays) => {
     !originalUrl.startsWith("https://")
   ) {
     originalUrl = "https://" + originalUrl;
+  }
+
+  // validate url
+  const isValid = validateUrl(originalUrl);
+  if (!isValid) {
+    throw new Error("Invalid URL");
   }
 
   let shortCode;
