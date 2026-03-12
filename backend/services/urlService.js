@@ -24,6 +24,17 @@ exports.createShortUrl = async (originalUrl, alias, expiresInDays) => {
 
   //If alias is passed :
   if (alias) {
+
+    //Alias regex validation :
+    const aliasRegex = /^[a-zA-Z0-9_-]{3,20}$/;
+    //  allowed characters: a-z A-Z 0-9 _ -
+    //    minimum length: 3
+    //    maximum length: 20
+    if (!aliasRegex.test(alias)) {
+      throw new Error("Invalid alias format");
+    }
+
+    
     // check if alias already exists in DB.
     const existing = await Url.findOne({ shortCode: alias });
 
@@ -33,29 +44,25 @@ exports.createShortUrl = async (originalUrl, alias, expiresInDays) => {
     }
 
     shortCode = alias;
-  } 
+  }
   //Generate shortCode without alias.
   else {
+    let isUnique = false;
 
-  let isUnique = false;
+    //shortCode collision handling:
 
-  //shortCode collision handling:
+    //If the shortCode is not unique then keep on generating the shortCode until it creates a unique one.
+    while (!isUnique) {
+      shortCode = generateShortCode();
 
-  //If the shortCode is not unique then keep on generating the shortCode until it creates a unique one.
-  while (!isUnique) {
+      const existing = await Url.findOne({ shortCode }); //Check whether the shortCode already exist.
 
-    shortCode = generateShortCode();
-
-    const existing = await Url.findOne({ shortCode }); //Check whether the shortCode already exist.
-
-    //If the shortCode is unique then use the generated shortCode.
-    if (!existing) {
-      isUnique = true;
+      //If the shortCode is unique then use the generated shortCode.
+      if (!existing) {
+        isUnique = true;
+      }
     }
-
   }
-
-}
 
   // expiry calculation
   let expiresAt = null;
@@ -111,12 +118,8 @@ exports.getOriginalUrl = async (shortCode) => {
     throw new Error("Link expired");
   }
 
- // increment clicks
-  await Url.updateOne(
-    { shortCode },
-    { $inc: { clicks: 1 } }
-  );
-
+  // increment clicks
+  await Url.updateOne({ shortCode }, { $inc: { clicks: 1 } });
 
   // cache the url in redis which we obtained from DB.
 

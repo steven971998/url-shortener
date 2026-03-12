@@ -1,6 +1,6 @@
 
 const analyticsService = require('../services/analyticsService')
-
+const logger = require('../config/logger')
 exports.getAnalytics = async (req, res) => {
   try {
 
@@ -11,12 +11,13 @@ exports.getAnalytics = async (req, res) => {
     if (!analytics) {
       return res.status(404).json({ message: "URL not found" });
     }
-
+    
     return res.json(analytics);
 
   } catch (error) {
 
-    console.log(`Error : ${error?.message}`);
+    // console.log(`Error : ${error?.message}`);
+    logger.error(error?.message);
     return res.status(500).json({ error: "Internal Server Error" });
 
   }
