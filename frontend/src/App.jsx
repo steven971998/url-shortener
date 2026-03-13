@@ -1,9 +1,15 @@
+import Router from "./router/router"
+import { Toaster } from "react-hot-toast"
+
 function App() {
+
   return (
-    <div className="text-4xl font-bold text-blue-500">
-      Tailwind Working 🚀
-    </div>
+    <>
+      <Router/>
+      <Toaster position="top-right"/>
+    </>
   )
+
 }
 
 export default App

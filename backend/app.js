@@ -3,11 +3,12 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerSpec = require("./config/swagger");
 const morgan = require("morgan");
 const logger = require("./config/logger");
-
+const cors = require('cors');
 const app = express()
 
 /* Body parser */
 app.use(express.json())
+app.use(cors())
 
 /* Send HTTP logs to Winston. */
 app.use(
