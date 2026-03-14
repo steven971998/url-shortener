@@ -9,24 +9,24 @@ export default function ShortUrlResult() {
 
   if (!shortUrl) return null
 
-  return (
+return (
 
-    <div className="mt-6">
+  <div className="mt-6 border rounded-md p-4 bg-gray-50 flex justify-between items-center">
 
-      <p className="text-green-600">{shortUrl}</p>
+    <p className="text-green-600 break-all">{shortUrl}</p>
 
-      <CopyToClipboard text={shortUrl}>
-        <button
-          onClick={() => toast.success("Copied")}
-          className="flex items-center gap-2"
-        >
-          <Copy size={18}/>
-          Copy
-        </button>
-      </CopyToClipboard>
+    <CopyToClipboard text={shortUrl}>
+      <button
+        onClick={() => toast.success("Copied")}
+        className="flex items-center gap-2 bg-black text-white px-3 py-1 rounded text-sm"
+      >
+        <Copy size={16}/>
+        Copy
+      </button>
+    </CopyToClipboard>
 
-    </div>
+  </div>
 
-  )
+)
 
 }

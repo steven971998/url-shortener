@@ -1,16 +1,11 @@
 import { Link } from "react-router-dom"
-// import { motion } from "framer-motion"
 import { Home } from "lucide-react"
 
 export default function NotFound() {
 
   return (
 
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="h-screen flex flex-col items-center justify-center text-center"
-    >
+    <div className="h-screen flex flex-col items-center justify-center text-center">
 
       <h1 className="text-6xl font-bold">
         404
@@ -28,7 +23,7 @@ export default function NotFound() {
         Go Home
       </Link>
 
-    </motion.div>
+    </div>
 
   )
 

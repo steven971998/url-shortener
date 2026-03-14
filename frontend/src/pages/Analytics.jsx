@@ -5,7 +5,7 @@ import AnalyticsCard from "../components/AnalyticsCard"
 import { CopyToClipboard } from "react-copy-to-clipboard"
 import { Copy } from "lucide-react"
 import toast from "react-hot-toast"
-// import { motion } from "framer-motion"
+import { motion } from "framer-motion"
 
 export default function Analytics() {
 
@@ -21,7 +21,6 @@ export default function Analytics() {
       try {
 
         const res = await getAnalytics(code)
-
         setData(res)
 
       } catch (error) {

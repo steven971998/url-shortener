@@ -1,27 +1,27 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom"
+// import { BrowserRouter, Routes, Route } from "react-router-dom"
 
-import Home from "../pages/Home"
-import Analytics from "../pages/Analytics"
-import NotFound from "../pages/NotFound"
+// import Home from "../pages/Home"
+// import Analytics from "../pages/Analytics"
+// import NotFound from "../pages/NotFound"
 
-export default function Router() {
+// export default function Router() {
 
-  return (
+//   return (
 
-    <BrowserRouter>
+//     <BrowserRouter>
 
-      <Routes>
+//       <Routes>
 
-        <Route path="/" element={<Home/>} />
+//         <Route path="/" element={<Home/>} />
 
-        <Route path="/analytics/:code" element={<Analytics/>} />
+//         <Route path="/analytics/:code" element={<Analytics/>} />
 
-        <Route path="*" element={<NotFound/>} />
+//         <Route path="*" element={<NotFound/>} />
 
-      </Routes>
+//       </Routes>
 
-    </BrowserRouter>
+//     </BrowserRouter>
 
-  )
+//   )
 
-}
+// }
