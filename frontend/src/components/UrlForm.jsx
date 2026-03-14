@@ -4,6 +4,7 @@ import { urlSchema } from "../schemas/urlSchema";
 import { createShortUrl } from "../services/urlService";
 import useUrlStore from "../store/urlStore";
 import toast from "react-hot-toast";
+import appConfig from "@/config/appConfig";
 
 export default function UrlForm() {
   const { setShortUrl } = useUrlStore();
@@ -36,9 +37,10 @@ export default function UrlForm() {
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <input
-        {...register("originalUrl")}
+        maxLength={appConfig.MAX_URL_LENGTH_ALLOWED}
         placeholder="Enter URL"
         className="border p-2 w-full"
+        {...register("originalUrl")}
       />
 
       {errors.originalUrl && <p>{errors.originalUrl.message}</p>}
@@ -53,6 +55,8 @@ export default function UrlForm() {
 
       <input
         type="number"
+        min="1"
+        max="365"
         {...register("expiresInDays")}
         placeholder="Expires in days (optional)"
         className="border p-2 w-full"

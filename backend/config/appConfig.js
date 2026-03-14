@@ -12,8 +12,8 @@ const appConfig = {
     DESCRIPTION : "API documentation for the URL Shortener service",
     URL : "http://localhost:5000"
 
-  }
-
+  },
+  MAX_URL_LENGTH_ALLOWED:2048
 };
 
 module.exports = appConfig;

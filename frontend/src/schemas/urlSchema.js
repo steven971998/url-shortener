@@ -1,9 +1,11 @@
+import appConfig from "@/config/appConfig"
 import * as yup from "yup"
 
 export const urlSchema = yup.object({
 
 originalUrl: yup
     .string()
+    .max(appConfig.MAX_URL_LENGTH_ALLOWED, `URL is too long (max ${appConfig.MAX_URL_LENGTH_ALLOWED} characters)`)
     .matches(
       /^(https?:\/\/)?([\w\d-]+\.)+[\w-]+(\/.*)?$/,
       "Enter valid URL"
@@ -59,7 +61,7 @@ expiresInDays: yup
     originalValue === "" ? null : value
   )
   .nullable()
-  .positive()
-  .integer()
-
+  .positive("Expiry must be greater than 0")
+  .integer("Expiry must be a whole number")
+.max(365, "Expiry cannot exceed 365 days")
 })

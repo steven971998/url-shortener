@@ -1,10 +1,19 @@
 const urlService = require("../services/urlService");
 const logger = require("../config/logger")
+const appConfig = require('../config/appConfig')
 
 //To shorten the URL :
 exports.createShortUrl = async (req, res) => {
   try {
     const { originalUrl, alias, expiresInDays } = req.body;
+
+    //Url length validation.
+    if (originalUrl.length > appConfig.MAX_URL_LENGTH_ALLOWED) {
+      logger.info(`status : ${400}, message : URL too long. Maximum length is ${appConfig.MAX_URL_LENGTH_ALLOWED} characters`)
+  return res.status(400).json({
+    message: `URL too long. Maximum length is ${appConfig.MAX_URL_LENGTH_ALLOWED} characters`
+  })
+}
 
     const url = await urlService.createShortUrl(
       originalUrl,
