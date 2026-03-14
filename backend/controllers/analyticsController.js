@@ -1,6 +1,7 @@
 
 const analyticsService = require('../services/analyticsService')
 const logger = require('../config/logger')
+
 exports.getAnalytics = async (req, res) => {
   try {
 

@@ -51,4 +51,6 @@ router.post("/api/url/shorten",shortenRateLimiter, urlController.createShortUrl)
  */
 router.get("/:code", urlController.redirectUrl)
 
+router.delete('/api/admin/deleteUrl/:code',urlController.deleteUrl) //Delete specific url.
+router.delete('/api/admin/deleteAllUrls',urlController.deleteAllUrls)
 module.exports = router

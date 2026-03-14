@@ -91,7 +91,8 @@ exports.createShortUrl = async (originalUrl, alias, expiresInDays) => {
 
 exports.getOriginalUrl = async (shortCode) => {
   // check redis cache
-  const cachedData = await redisClient.get(shortCode); //Fetch the original url data from redis if available.
+  // const cachedData = await redisClient.get(shortCode); //Fetch the original url data from redis if available.
+  const cachedData = await redisClient.get(`url-shortener:${shortCode}`); //Fetch the original url data from redis if available.
 
   //If original url exists in redis then return it without checking DB.
   if (cachedData) {
@@ -130,7 +131,8 @@ exports.getOriginalUrl = async (shortCode) => {
   }
 
   await redisClient.set(
-    shortCode,
+    // shortCode,
+    `url-shortener:${shortCode}`,
     JSON.stringify({
       originalUrl: url.originalUrl,
       expiresAt: url.expiresAt,
@@ -140,3 +142,38 @@ exports.getOriginalUrl = async (shortCode) => {
 
   return url.originalUrl;
 };
+
+exports.deleteUrl = async (shortCode)=>{
+
+    //Delete from mongoDB.
+    const deleted = await Url.findOneAndDelete({ shortCode });
+
+    //If URL not found in the db.
+    if(!deleted){
+      throw ({status: 404, message: 'URL not found'})
+    }
+
+    //Delete from redis cache.
+
+    await redisClient.del(`url-shortener:${shortCode}`);
+    return true;
+
+}
+
+exports.deleteAllUrls = async()=>{
+
+//Delete all URLs from mongoDB.
+
+const deleted = await Url.deleteMany({})
+
+//Delete all the URLs from redis for our key.
+
+  const keys = await redisClient.keys("url-shortener:*");
+
+  if (keys.length > 0) {
+    await redisClient.del(keys);
+  }
+  
+  return deleted?.deletedCount;
+
+}

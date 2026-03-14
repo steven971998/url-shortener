@@ -1,5 +1,5 @@
 const urlService = require("../services/urlService");
-const logger = require("../config/logger");
+const logger = require("../config/logger")
 
 //To shorten the URL :
 exports.createShortUrl = async (req, res) => {
@@ -30,13 +30,11 @@ exports.createShortUrl = async (req, res) => {
     }
     //If Alias format is invalid.
     else if (error?.message === "Invalid alias format") {
-      return res
-        .status(400)
-        .json({
-          message: "Invalid alias format",
-          error:
-            "Alias must be 3–20 characters and contain only letters, numbers, - or _",
-        });
+      return res.status(400).json({
+        message: "Invalid alias format",
+        error:
+          "Alias must be 3–20 characters and contain only letters, numbers, - or _",
+      });
     }
 
     return res.status(500).json({ error: "Internal Server Error" });
@@ -52,7 +50,7 @@ exports.redirectUrl = async (req, res) => {
     if (!originalUrl) {
       return res.status(404).json({ message: "URL not found" });
     }
-    logger.info(`Redirected to originalUrl : ${originalUrl}`)
+    logger.info(`Redirected to originalUrl : ${originalUrl}`);
     return res.redirect(originalUrl);
   } catch (error) {
     // console.log(`Error : ${error?.message}`);
@@ -63,5 +61,57 @@ exports.redirectUrl = async (req, res) => {
     }
 
     return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+//To Delete all the data from MongoDB and Redis.
+
+exports.deleteAllUrls = async (req, res) => {
+  try {
+
+    //Can't delete any data in production.
+    if (
+      process.env.NODE_ENV.toLowerCase() == "prod" ||
+      process.env.NODE_ENV.toLowerCase() == "production"
+    ) {
+      return res.status(403).json({ message: "Not allowed" });
+    }
+
+  let deletedCount = await urlService.deleteAllUrls();
+
+    return res.status(200).json({message: 'All URLs deleted successfully', deleteCount : deletedCount})
+
+  } catch (error) {
+    logger.error(error?.message);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+//To Delete a specific URL.
+
+exports.deleteUrl = async (req, res) => {
+  try {
+    const { shortCode } = req.params;
+
+        //Can't delete any data in production.
+    if (
+      process.env.NODE_ENV.toLowerCase() == "prod" ||
+      process.env.NODE_ENV.toLowerCase() == "production"
+    ) {
+      return res.status(403).json({ message: "Not allowed" });
+    }
+
+    await urlService.deleteUrl(shortCode); 
+    return res
+      .status(200)
+      .json({ message: "URL deleted successfully", shortCode: shortCode });
+  } catch (error) {
+    logger.error(error?.message);
+
+    if (error.message === "URL not found") {
+      return res.status(error.status).json({ message: error.message });
+    }
+
+    return res.status(500).json({ message: "Internal Server Error" });
   }
 };
