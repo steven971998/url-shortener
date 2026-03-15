@@ -1,3 +1,6 @@
+
+//To validate Url to allow proper URLs.
+
 function validateUrl(url) {
   try {
     const parsed = new URL(url);

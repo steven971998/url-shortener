@@ -2,7 +2,7 @@ const Url = require("../models/Url");
 
 exports.getAnalytics = async (shortCode) => {
 
-  const url = await Url.findOne({ shortCode });
+  const url = await Url.findOne({ shortCode }); 
 
   if (!url) {
     return null;

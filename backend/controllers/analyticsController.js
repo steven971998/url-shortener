@@ -2,6 +2,7 @@
 const analyticsService = require('../services/analyticsService')
 const logger = require('../config/logger')
 
+//To get the analytics data of a shortened url.
 exports.getAnalytics = async (req, res) => {
   try {
 
@@ -17,7 +18,6 @@ exports.getAnalytics = async (req, res) => {
 
   } catch (error) {
 
-    // console.log(`Error : ${error?.message}`);
     logger.error(error?.message);
     return res.status(500).json({ error: "Internal Server Error" });
 

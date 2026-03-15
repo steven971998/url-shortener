@@ -1,5 +1,10 @@
 const appConfig = {
-  REDIS_CACHE_TTL: 3600, // 3600 seconds (1 hour),
+
+  SHORT_CODE_LENGTH:6,
+  REDIS: {
+    REDIS_CACHE_TTL: 3600, // 3600 seconds (1 hour)
+    REDIS_KEY_NAME: 'url-shortener'
+  },
   RATE_LIMIT: {
     MAX_REQUESTS: 100, //Max requests allowed in the window.
     WINDOW: 15, //Time window.

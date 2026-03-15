@@ -92,7 +92,7 @@ exports.createShortUrl = async (originalUrl, alias, expiresInDays) => {
 exports.getOriginalUrl = async (shortCode) => {
   // check redis cache
   // const cachedData = await redisClient.get(shortCode); //Fetch the original url data from redis if available.
-  const cachedData = await redisClient.get(`url-shortener:${shortCode}`); //Fetch the original url data from redis if available.
+  const cachedData = await redisClient.get(`${appConfig.REDIS.REDIS_KEY_NAME}:${shortCode}`); //Fetch the original url data from redis if available.
 
   //If original url exists in redis then return it without checking DB.
   if (cachedData) {
@@ -124,7 +124,7 @@ exports.getOriginalUrl = async (shortCode) => {
 
   // cache the url in redis which we obtained from DB.
 
-  let ttl = appConfig.REDIS_CACHE_TTL; //Default expiry time in Redis when user has not mentioned the expiry time.
+  let ttl = appConfig.REDIS.REDIS_CACHE_TTL; //Default expiry time in Redis when user has not mentioned the expiry time.
 
   if (url.expiresAt) {
     ttl = Math.floor((new Date(url.expiresAt) - new Date()) / 1000);
@@ -132,7 +132,7 @@ exports.getOriginalUrl = async (shortCode) => {
 
   await redisClient.set(
     // shortCode,
-    `url-shortener:${shortCode}`,
+    `${appConfig.REDIS.REDIS_KEY_NAME}:${shortCode}`,
     JSON.stringify({
       originalUrl: url.originalUrl,
       expiresAt: url.expiresAt,
@@ -143,6 +143,8 @@ exports.getOriginalUrl = async (shortCode) => {
   return url.originalUrl;
 };
 
+
+//Delete specific shortened url based on the shortCode.
 exports.deleteUrl = async (shortCode)=>{
 
     //Delete from mongoDB.
@@ -155,11 +157,13 @@ exports.deleteUrl = async (shortCode)=>{
 
     //Delete from redis cache.
 
-    await redisClient.del(`url-shortener:${shortCode}`);
+    await redisClient.del(`${appConfig.REDIS.REDIS_KEY_NAME}:${shortCode}`);
     return true;
 
 }
 
+
+//Delete all shortened URLs from the mongoDB and Redis.
 exports.deleteAllUrls = async()=>{
 
 //Delete all URLs from mongoDB.
@@ -168,7 +172,7 @@ const deleted = await Url.deleteMany({})
 
 //Delete all the URLs from redis for our key.
 
-  const keys = await redisClient.keys("url-shortener:*");
+  const keys = await redisClient.keys(`${appConfig.REDIS.REDIS_KEY_NAME}:*`); //To retrieve all the redis keys starting from url-shortener
 
   if (keys.length > 0) {
     await redisClient.del(keys);
