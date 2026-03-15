@@ -6,6 +6,7 @@ import { CopyToClipboard } from "react-copy-to-clipboard"
 import { Copy } from "lucide-react"
 import toast from "react-hot-toast"
 import { motion } from "framer-motion"
+import appConfig from "@/config/appConfig";
 
 export default function Analytics() {
 
@@ -58,8 +59,7 @@ export default function Analytics() {
     )
   }
 
-  const shortUrl = `${window.location.origin}/${data.shortCode}`
-
+const shortUrl = `${appConfig.API_BASE_URL}/${data.shortCode}`
   return (
 
     <div className="bg-[#0B1A33] min-h-[calc(100vh-64px)] flex items-center justify-center">
