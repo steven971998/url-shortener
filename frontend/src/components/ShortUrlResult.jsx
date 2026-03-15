@@ -23,7 +23,7 @@ export default function ShortUrlResult() {
       <div className="flex gap-3">
         <CopyToClipboard text={shortUrl}>
           <button
-            onClick={() => toast.success("Copied")}
+            onClick={() => toast.success("URL Copied")}
             // className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm transition shadow-sm hover:shadow-md"
             className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm transition
 shadow-sm hover:shadow-[0_0_10px_rgba(16,185,129,0.35)]"

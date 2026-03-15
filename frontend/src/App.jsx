@@ -1,5 +1,6 @@
 import Navbar from "./components/Navbar"
 import AppRouter from "./router"
+import { Toaster } from "react-hot-toast"
 
 function App() {
 
@@ -7,6 +8,8 @@ function App() {
     <>
       <Navbar />
       <AppRouter />
+            <Toaster position="top-center" />
+
     </>
   )
 
