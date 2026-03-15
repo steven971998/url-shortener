@@ -44,7 +44,7 @@ export default function Analytics() {
 
   if (loading) {
     return (
-      <div className="text-center mt-20">
+      <div className="text-center text-white mt-20">
         Loading analytics...
       </div>
     )
@@ -52,7 +52,7 @@ export default function Analytics() {
 
   if (!data) {
     return (
-      <div className="text-center mt-20">
+      <div className="text-center text-white mt-20">
         No analytics found
       </div>
     )
@@ -62,83 +62,95 @@ export default function Analytics() {
 
   return (
 
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="max-w-xl mx-auto mt-16 space-y-6"
-    >
+    <div className="bg-[#0B1A33] min-h-[calc(100vh-64px)] flex items-center justify-center">
 
-      <h1 className="text-3xl font-bold text-center">
-        URL Analytics
-      </h1>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-xl w-full space-y-6 px-6"
+      >
 
-      {/* Original URL */}
-      <div className="border p-4 rounded-lg">
+        <h1 className="text-5xl font-bold text-white text-center">
+          URL Analytics
+        </h1>
 
-        <p className="text-sm text-gray-500">Original URL</p>
 
-        <p className="break-all">{data.originalUrl}</p>
+        {/* Original URL */}
 
-      </div>
+        <div className="bg-[#1E2B3F] border border-slate-700 rounded-xl p-6 shadow-lg">
 
-      {/* Short URL */}
+          <p className="text-sm text-slate-400 mb-1">Original URL</p>
 
-      <div className="border p-4 rounded-lg flex justify-between items-center">
+          <p className="text-white break-all">
+            {data.originalUrl}
+          </p>
 
-        <div>
-          <p className="text-sm text-gray-500">Short URL</p>
-          <p>{shortUrl}</p>
         </div>
 
-        <CopyToClipboard text={shortUrl}>
-          <button
-            onClick={() => toast.success("Copied")}
-            className="flex items-center gap-2 text-sm"
-          >
-            <Copy size={18} />
-            Copy
-          </button>
-        </CopyToClipboard>
 
-      </div>
+        {/* Short URL */}
 
+        <div className="bg-[#1E2B3F] border border-slate-700 rounded-xl p-6 shadow-lg flex justify-between items-center">
 
-      {/* Click Count */}
+          <div>
+            <p className="text-sm text-slate-400 mb-1">Short URL</p>
+            <p className="text-emerald-400 break-all">
+              {shortUrl}
+            </p>
+          </div>
 
-      <div className="border p-4 rounded-lg">
+          <CopyToClipboard text={shortUrl}>
+            <button
+              onClick={() => toast.success("Copied")}
+              className="flex items-center gap-2 bg-gray-800 hover:bg-gray-700 text-white px-4 py-2 rounded-md text-sm transition shadow-sm hover:shadow-[0_0_10px_rgba(16,185,129,0.35)]"
+            >
+              <Copy size={16}/>
+              Copy
+            </button>
+          </CopyToClipboard>
 
-        <p className="text-sm text-gray-500">Total Clicks</p>
-
-        <p className="text-2xl font-bold">
-          {data.clicks}
-        </p>
-
-      </div>
-
-
-      {/* Chart */}
-
-      <AnalyticsCard data={data} />
+        </div>
 
 
-      {/* Created */}
+        {/* Click Count */}
 
-      <div className="text-sm text-gray-500">
+        <div className="bg-[#1E2B3F] border border-slate-700 rounded-xl p-6 shadow-lg">
 
-        <p>
-          Created: {new Date(data.createdAt).toLocaleString()}
-        </p>
+          <p className="text-sm text-slate-400 mb-1">Total Clicks</p>
 
-        {data.expiresAt && (
-          <p>
-            Expires: {new Date(data.expiresAt).toLocaleString()}
+          <p className="text-3xl font-bold text-white">
+            {data.clicks}
           </p>
-        )}
 
-      </div>
+        </div>
 
-    </motion.div>
+
+        {/* Chart */}
+
+        {/* <AnalyticsCard data={data} /> */}
+
+
+        {/* Dates */}
+
+        <div className="text-sm text-slate-400 text-center">
+
+          <p>
+            Created: {new Date(data.createdAt).toLocaleString()}
+          </p>
+
+          {data.expiresAt && (
+            <p>
+              Expires: {new Date(data.expiresAt).toLocaleString()}
+            </p>
+          )}
+
+        </div>
+
+      </motion.div>
+
+    </div>
 
   )
 
 }
+
