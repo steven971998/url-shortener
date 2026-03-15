@@ -1,40 +1,34 @@
 import { Link } from "react-router-dom"
-import { LinkIcon} from "lucide-react"
+import { LinkIcon } from "lucide-react"
 
 export default function Navbar() {
 
   return (
 
-    <nav className="w-full border-b bg-white">
+    <nav className="w-full border-b border-gray-700 bg-[#0b1a33]/90 backdrop-blur">
 
-      <div className="max-w-6xl mx-auto px-3 py-2 flex items-center justify-between">
+      <div className="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
 
         {/* Logo */}
 
-        <Link to="/" className="flex items-center gap-2 text-xl font-bold">
-
-          <LinkIcon size={22}/>
+        <Link
+          to="/"
+          className="flex items-center gap-2 text-lg font-semibold text-white hover:text-emerald-400 transition"
+        >
+          <LinkIcon size={20} className="text-emerald-400" />
           Shortify
-
         </Link>
-
 
         {/* Menu */}
 
-        <div className="flex items-center gap-6 text-sm">
+        <div className="flex items-center gap-6 text-sm text-gray-300">
 
-          <Link to="/analytics/" className="hover:text-gray-600">
+          <Link
+            to="/analytics"
+            className="hover:text-emerald-400 transition"
+          >
             Analytics
           </Link>
-
-          {/* <a
-            href="https://github.com"
-            target="_blank"
-            className="flex items-center gap-1 hover:text-gray-600"
-          >
-            <Github size={18}/>
-            GitHub
-          </a> */}
 
         </div>
 
