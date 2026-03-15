@@ -49,7 +49,12 @@ originalUrl: yup
 
 alias: yup
   .string()
+  .transform((value, originalValue) =>
+    originalValue === "" ? null : value
+  )
   .notRequired()
+  .min(3, "Alias must be at least 3 characters")
+  .max(30, "Alias cannot exceed 30 characters")
   .matches(/^[a-zA-Z0-9_-]{3,20}$/, {
     message: "Invalid alias format",
     excludeEmptyString: true

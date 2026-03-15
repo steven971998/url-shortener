@@ -12,6 +12,8 @@ export default function AppRouter() {
 
       <Route path="/" element={<Home />} />
 
+      <Route path="/analytics/" element={<Analytics />} />
+
       <Route path="/analytics/:code" element={<Analytics />} />
 
       <Route path="*" element={<NotFound />} />
